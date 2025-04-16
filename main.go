@@ -1,18 +1,9 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func main() {
-
-	const (
-		selectCount    = "Enter Count"
-		selectCurrency = "Enter Currency Code"
-	)
-
 	var err error
-
 	// Курс валют относительно 1 USD
 	var rates = map[string]float64{
 		"USD": 1.0,   // Доллар США
@@ -33,7 +24,8 @@ func main() {
 	}
 
 	fmt.Println("Welcome to the currency converter!")
-	fmt.Print("Available currency for converting:\n")
+	fmt.Println("Available currency for converting:")
+
 	i := 0
 	var currencies []string
 	for k, v := range rates {
@@ -42,55 +34,26 @@ func main() {
 		fmt.Printf("%d. %s %v\n", i, k, v)
 	}
 
-	stage := selectCount
-
-	var USDCount int
-
+	var USDCount float64
 	for {
-
-		switch stage {
-		case selectCount:
-
-			fmt.Print("Enter your count in USD: ")
-
-			_, err = fmt.Scan(&USDCount)
-			if err != nil {
-				break
-			}
-			if USDCount < 1 {
-				fmt.Println("Count must be greater than zero")
-				break
-			}
-			stage = selectCurrency
-			break
-
-		case selectCurrency:
-			fmt.Print("Select your currency you want to convert in upper list:\n")
-			SelectedCurrency := 1
-			_, err = fmt.Scan(&SelectedCurrency)
-			if err != nil {
-				stage = selectCount
-				break
-			}
-
-			if SelectedCurrency < 1 {
-				fmt.Println("Selected currency must be greater than zero")
-				stage = selectCount
-				break
-			}
-			if SelectedCurrency > len(currencies) {
-				fmt.Println("Wrong choice of currency")
-				stage = selectCount
-				break
-			}
-
-			convertedCount := float64(USDCount) * rates[currencies[SelectedCurrency-1]]
-
-			fmt.Printf("Converted result: %.2f USD = %.2f %s \n", float64(USDCount), convertedCount, currencies[SelectedCurrency-1])
-			stage = selectCount
-			break
+		fmt.Print("Enter your count in USD: ")
+		_, err = fmt.Scan(&USDCount)
+		if err != nil {
 		}
-
+		if USDCount <= 0 {
+			fmt.Println("Count must be greater than zero")
+			continue
+		}
+		fmt.Print("Select your currency you want to convert in upper list:\n")
+		selectedCurrency := 1
+		_, err = fmt.Scan(&selectedCurrency)
+		if err != nil {
+		}
+		if selectedCurrency < 1 || selectedCurrency > len(currencies) {
+			fmt.Println("Wrong choice of currency")
+			continue
+		}
+		convertedCount := USDCount * rates[currencies[selectedCurrency-1]]
+		fmt.Printf("Converted result: %.2f USD = %.2f %s \n", USDCount, convertedCount, currencies[selectedCurrency-1])
 	}
-
 }
